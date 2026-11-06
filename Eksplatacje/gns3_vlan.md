@@ -56,7 +56,7 @@ i gotowe
 > [!IMPORTANT]
 >   Trzeba zrobić to samo na drugim ESW_ bo inaczej to nie zadziała 
 
-#Testowanie
+# Testowanie
 trzeba wejść w komputery i przypisać im ip 
 Dla PC1
 ```ip 100.100.100.1```
