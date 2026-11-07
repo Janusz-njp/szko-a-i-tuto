@@ -388,6 +388,7 @@ exit
 | Objaw | Prawdopodobna przyczyna | Rozwiązanie |
 |-------|-------------------------|-------------|
 | Ping między switchami nie przechodzi | Konfiguracja zrobiona tylko na jednym switchu | Powtórz VLAN-y i trunk na drugim switchu |
+| Przy pingu pojawia się `not reachable` | Zawieszone połączenie lub urządzenie (zdarza się w GNS3) | Odłącz i podłącz ponownie kabel albo wyłącz i włącz urządzenia |
 | VLAN-u nie ma na liście | Brak `exit` po `vlan database` | Wejdź ponownie w `vlan database` i wyjdź komendą `exit` |
 | Pierwszy ping się zgubił | Normalne zachowanie (ARP) | Wyślij ping jeszcze raz |
 | Komputery z tego samego VLAN-u się nie widzą | Zły VLAN na porcie albo adresy z różnych sieci | Sprawdź `show vlan-switch` oraz `show ip` na komputerze |
