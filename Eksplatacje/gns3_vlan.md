@@ -1,77 +1,135 @@
+# 🌐 Eksploatacja – VLAN w GNS3
 
-# Eksplatacje 
+> Jak stworzyć VLAN i skonfigurować komunikację między komputerami podłączonymi do **oddzielnych EtherSwitchy**.
 
-jak zrobić vlan oraz ustawić żeby komputery się komunikowały kiedy są oddzielnych etherswitchach komunikowały
-Prosta wymagana konfiguracja: to 2 vpsc podłączone oddzielnie do ethernetswitch router
+## 📑 Spis treści
 
-## Tworzenie vlan
-Tworzenie vlan
-Wejść w konsole ESW1
-żeby stworzyć vlan potrzebuje my wejść w baze danych vlan a więc trzeba wpisać następującą komende 
-```vlan database```
+1. [Topologia](#-topologia)
+2. [Tworzenie VLAN](#-tworzenie-vlan)
+3. [Przypisywanie portów do VLAN](#-przypisywanie-portów-do-vlan)
+4. [Konfiguracja trunka](#-konfiguracja-trunka)
+5. [Testowanie](#-testowanie)
 
-następnie trzeba stworzyć naprzykład "vlan 50" - 
-```vlan 50```
+---
 
-Żeby komputery się komunikowały i działy prawidłowo trzeba je przypisać ich port do portu gdzie jest przypisany vlan 50 oraz ustawić w miejsce portów którymi routery są połączone tryb trunk 
-w moim przypadku routery są na fa1/15
+## 🗺️ Topologia
 
-## Podłączanie portów do vlan
-Najpierw trzeba wejść w configuracje
-```configure terminal```
-Lub skrótem
-```conf te```
+Minimalna wymagana konfiguracja: **2 × VPCS**, każdy podłączony do osobnego **EtherSwitcha** (ESW1 i ESW2). Przełączniki są połączone ze sobą portem `fa1/15`.
 
- a teraz trzeba wejść w interface
+```mermaid
+graph LR
+    PC1["💻 PC1<br/>100.100.100.1"] ---|"fa1/0 · VLAN 50"| ESW1["🔀 ESW1"]
+    ESW1 ===|"fa1/15 · TRUNK"| ESW2["🔀 ESW2"]
+    ESW2 ---|"fa1/0 · VLAN 50"| PC2["💻 PC2<br/>100.100.100.2"]
+```
 
-załóżmy że chcemy mieć około 10 portów więc wpisujemy zakres portów
-```interface range fastEthernet 1/0 -10```
+---
 
-jeśli chcemy tylko 1 port to
-```interface fastEthernet 1/0```
+## 🛠️ Tworzenie VLAN
 
-W miejsce zera jest to numer portu
-teraz włączamy tryb access żeby przypisać porty do vlan
-```switchport mode access```
+1. Wejdź do konsoli **ESW1**.
+2. Aby utworzyć VLAN, trzeba wejść do bazy danych VLAN:
 
-potem przypisujemy
-```switchport access vlan 50```
+   ```
+   vlan database
+   ```
 
- Gotowe,
-teraz włączamy tryb trunk na porcie gdzie nasze routery są połączone w moim przypadku będzie to fa1/15
+3. Utwórz VLAN, np. o numerze 50:
 
-wchodzimy w interface
-```interface fastEthernet 1/15```
+   ```
+   vlan 50
+   ```
 
-teraz włączamy trunk
-```switchport mode trunk```
+4. Zatwierdź zmiany i wyjdź z bazy VLAN:
+
+   ```
+   exit
+   ```
+
+> [!TIP]
+> Żeby komputery się komunikowały, trzeba:
+> - przypisać ich porty do VLAN 50,
+> - ustawić tryb **trunk** na porcie łączącym oba przełączniki (u mnie `fa1/15`).
+
+---
+
+## 🔌 Przypisywanie portów do VLAN
+
+Najpierw wejdź w tryb konfiguracji:
+
+```
+configure terminal
+```
+
+lub skrótem:
+
+```
+conf te
+```
+
+Następnie wybierz porty, które chcesz przypisać:
+
+| Cel | Komenda |
+|-----|---------|
+| Zakres portów (np. 0–10) | `interface range fastEthernet 1/0 - 10` |
+| Jeden port | `interface fastEthernet 1/0` |
 
 > [!NOTE]
-> mogą się pokazać jakieś komunikaty ale nie powinny one przeszkodzić
+> W miejsce `0` wstaw numer portu, którego chcesz użyć.
 
-teraz dodajemy port fa1/15 do vlan 50
-```switchport trunk allowed vlan add 50```
-i gotowe
+Włącz tryb **access** i przypisz port do VLAN:
+
+```
+switchport mode access
+switchport access vlan 50
+```
+
+✅ Gotowe – porty są w VLAN 50.
+
+---
+
+## 🔗 Konfiguracja trunka
+
+Teraz ustawiamy tryb **trunk** na porcie, którym połączone są przełączniki (u mnie `fa1/15`).
+
+```
+interface fastEthernet 1/15
+switchport mode trunk
+```
+
+> [!NOTE]
+> Mogą pojawić się jakieś komunikaty, ale nie powinny przeszkodzić w konfiguracji.
+
+Dodaj VLAN 50 do portu trunk:
+
+```
+switchport trunk allowed vlan add 50
+```
 
 > [!IMPORTANT]
->   Trzeba zrobić to samo na drugim ESW_ bo inaczej to nie zadziała 
+> Całą konfigurację trzeba wykonać **także na drugim przełączniku (ESW2)** – bez tego komunikacja nie zadziała!
 
-# Testowanie
-trzeba wejść w komputery i przypisać im ip 
-Dla PC1
-```ip 100.100.100.1```
+---
 
-a dla PC2
-```ip 100.100.100.2```
-jest to przykładowe ip
+## ✅ Testowanie
 
-i teraz pingujemy
-na PC1
-```ping 100.100.100.2```
+Wejdź w konsolę każdego komputera i nadaj mu adres IP (podane adresy są przykładowe).
 
+| Komputer | Komenda |
+|----------|---------|
+| **PC1** | `ip 100.100.100.1/24` |
+| **PC2** | `ip 100.100.100.2/24` |
 
-oraz na PC2
-```ping 100.100.100.1```
+Następnie sprawdź połączenie pingiem:
+
+| Z komputera | Komenda |
+|-------------|---------|
+| **PC1** | `ping 100.100.100.2` |
+| **PC2** | `ping 100.100.100.1` |
+
+Jeśli odpowiedzi wracają – VLAN i trunk działają poprawnie 🎉
+
+---
 
 > [!CAUTION]
-> To jest moja wersja i mogą być w niej błędy !
+> To jest moja wersja poradnika i mogą być w niej błędy!
