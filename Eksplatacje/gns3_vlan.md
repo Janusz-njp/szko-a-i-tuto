@@ -133,3 +133,4 @@ Jeśli odpowiedzi wracają – VLAN i trunk działają poprawnie 🎉
 
 > [!CAUTION]
 > To jest moja wersja poradnika i mogą być w niej błędy!
+> Stworzone przez człowieka ale stylizowane przez ai
