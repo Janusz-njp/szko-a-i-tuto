@@ -91,19 +91,17 @@ Wejdź do konsoli switcha i przejdź do trybu konfiguracji (`conf te` to skrót 
 **ESW1:**
  
 ```
-enable
 configure terminal
 hostname trunk1_nazwisko
-end
+exit
 ```
  
 **ESW2:**
  
 ```
-enable
 configure terminal
 hostname trunk2_nazwisko
-end
+exit
 ```
  
 Znak zachęty zmieni się na nową nazwę, np. `trunk1_nazwisko#`. ✅
@@ -120,7 +118,7 @@ Zakres portów `fa1/0 - 14` ustawiamy w trybie **access**:
 configure terminal
 interface range fastEthernet 1/0 - 14
  switchport mode access
-end
+exit
 ```
  
 > [!NOTE]
@@ -138,7 +136,7 @@ Port `fa1/15` łączy oba switche, więc ustawiamy go w trybie **trunk**:
 configure terminal
 interface fastEthernet 1/15
  switchport mode trunk
-end
+exit
 ```
  
 > [!NOTE]
@@ -179,7 +177,7 @@ interface range fastEthernet 1/0 - 7
  switchport access vlan 20
 interface range fastEthernet 1/8 - 14
  switchport access vlan 30
-end
+exit
 ```
  
 Sprawdź, czy oba VLAN-y są widoczne i mają przypisane porty:
@@ -228,7 +226,7 @@ configure terminal
 interface fastEthernet 1/15
  switchport trunk allowed vlan add 20
  switchport trunk allowed vlan add 30
-end
+exit
 ```
  
 > [!IMPORTANT]
@@ -251,7 +249,7 @@ Port trunk opisujemy w formacie `trunk_` + nazwa switcha.
 configure terminal
 interface fastEthernet 1/15
  description trunk_trunk1_nazwisko
-end
+exit
 ```
  
 **ESW2:**
@@ -260,7 +258,7 @@ end
 configure terminal
 interface fastEthernet 1/15
  description trunk_trunk2_nazwisko
-end
+exit
 ```
  
 ---
@@ -345,7 +343,7 @@ interface fastEthernet 1/15
  switchport mode trunk
  switchport trunk allowed vlan add 20
  switchport trunk allowed vlan add 30
-end
+exit
 ```
  
 </details>
@@ -370,7 +368,7 @@ interface fastEthernet 1/15
  switchport mode trunk
  switchport trunk allowed vlan add 20
  switchport trunk allowed vlan add 30
-end
+exit
 ```
  
 </details>
