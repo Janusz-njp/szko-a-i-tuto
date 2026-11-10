@@ -291,7 +291,6 @@ Utwórz plik `trunk_nazwisko.txt` i wklej do niego konfigurację obu switchy ora
 Na każdym switchu (w trybie `#`) wpisz:
  
 ```
-terminal length 0
 show running-config
 ```
  
